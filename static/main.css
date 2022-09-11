@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+
+body{
+    font-family: 'poppins';
+    background-color: rgb(33,37,41);
+}
+
+.main{
+    color: #FFC106;
+}
+
+.body-text{
+    margin: 20px;
+    text-align: center;
+}
+
+.thumb-img{
+    /* max-height: 20px; */
+    margin: 20px;
+    width: 300px;  
+height: auto; 
+}
