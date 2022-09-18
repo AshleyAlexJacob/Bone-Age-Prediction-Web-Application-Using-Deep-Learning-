@@ -41,20 +41,21 @@ def deleteFiles():
 
 # Adding allowed extensions of images only
 
-allowed_extensions = ['png']
+allowed_extensions = ['jpg' , 'jpeg' , 'png' , 'jfif']
 
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.',1)[1] in allowed_extensions
 
 
-classes = ['male' ,'female']
+classes = ['airplane' ,'automobile', 'bird' , 'cat' , 'deer' ,'dog' ,'frog', 'horse' ,'ship' ,'truck']
+
 
 
 def runModel(filename , model):
-    img = load_img(filename , target_size = (256 , 256))
+    img = load_img(filename , target_size = (32 , 32))
     img = img_to_array(img)
-    img = img.reshape((256,256,3))
+    img = img.reshape(1 , 32 ,32 ,3)
 
     img = img.astype('float32')
     img = img/255.0
