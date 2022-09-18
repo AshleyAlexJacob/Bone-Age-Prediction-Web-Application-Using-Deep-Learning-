@@ -15,12 +15,12 @@ app = Flask(__name__)
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
 
-def mae_in_months(x, y,std_bone_age,mean_bone_age):
-    return mean_absolute_error((std_bone_age*x + mean_bone_age), 
-                               (std_bone_age*y + mean_bone_age))
+def mae_in_months(x, y):
+    return mean_absolute_error((41.18*x + 127.320), 
+                               (41.18*y +127.320))
 
-model = load_model(os.path.join(base_dir,'models/model.hdf5'))
-# model = load_model(os.path.join(base_dir,'models/xception_weak_model.hdf5'),compile=False,custom_objects={"mae_in_months": mae_in_months}); 
+# model = load_model(os.path.join(base_dir,'models/model.hdf5'))
+model = load_model(os.path.join(base_dir,'models/xception_weak_model.hdf5'),compile=False,custom_objects={"mae_in_months": mae_in_months}); 
 
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
 
@@ -41,20 +41,20 @@ def deleteFiles():
 
 # Adding allowed extensions of images only
 
-allowed_extensions = ['png','jpg','jpeg']
+allowed_extensions = ['png']
 
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.',1)[1] in allowed_extensions
 
 
-classes = ['airplane' ,'automobile', 'bird' , 'cat' , 'deer' ,'dog' ,'frog', 'horse' ,'ship' ,'truck']
+classes = ['male' ,'female']
 
 
 def runModel(filename , model):
-    img = load_img(filename , target_size = (32 , 32))
+    img = load_img(filename , target_size = (256 , 256))
     img = img_to_array(img)
-    img = img.reshape(1 , 32 ,32 ,3)
+    img = img.reshape((256,256,3))
 
     img = img.astype('float32')
     img = img/255.0
