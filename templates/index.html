@@ -11,9 +11,18 @@
    <div class="flex-shrink-0">
       <img src="../static/bg.png" alt="" class="img-thumbnail thumb-img img-fluid">
    </div>
-   <div class="m-5">
+   <div class="upload-file">
+      <label class="custom-file-upload">
+         <form class = "file-form" action="/predict" method="post", enctype="multipart/form-data">
+            <input type="file"  name="file">
+            Upload
+            <button class="btn btn-success btn-lg">Proceed</button> 
+         </form>
+     </label>
+      </div>
+   <!-- <div class="m-5">
       <button type="button" class="btn btn-warning">Upload Xray Image</button>
-   </div>
+   </div> -->
 </div>
 
 {% endblock content %}
