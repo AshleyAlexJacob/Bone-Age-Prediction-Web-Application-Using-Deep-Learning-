@@ -19,8 +19,8 @@ def mae_in_months(x, y):
     return mean_absolute_error((41.18*x + 127.320), 
                                (41.18*y +127.320))
 
-# model = load_model(os.path.join(base_dir,'models/model.hdf5'))
-model = load_model(os.path.join(base_dir,'models/xception_weak_model.hdf5'),compile=False,custom_objects={"mae_in_months": mae_in_months}); 
+model = load_model(os.path.join(base_dir,'models/model.hdf5'))
+# model = load_model(os.path.join(base_dir,'models/xception_weak_model.hdf5'),compile=False,custom_objects={"mae_in_months": mae_in_months}); 
 
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
 
