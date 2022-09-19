@@ -94,11 +94,6 @@ def predict():
     if request.method == 'POST':
         if (request.files):
             file = request.files['file']
-            # file_name = secure_filename(file.filename)
-            # file.save(os.path.join(app.config['UPLOAD_FOLDER'], file_name))
-            # session['upload_image'] = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
-            # return render_template('image.html',image = os.path.join(app.config['UPLOAD_FOLDER'],file_name))
-            
             if file and allowed_file(file.filename):
                 file_name = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], file_name))
@@ -124,6 +119,39 @@ def predict():
     else:
         return {'error':'Requires post method'}
             
+
+@app.route("/api",methods=['GET','POST'])
+
+def predictionAPI():
+    error = ''
+    
+    if request.method == 'POST':
+        if (request.files):
+            file = request.files['file']
+            if file and allowed_file(file.filename):
+                file_name = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], file_name))
+                img = file.filename
+                class_result , prob_result = runModel((os.path.join(app.config['UPLOAD_FOLDER'], img)) , model)
+                results = {
+                        "class1":class_result[0],
+                            "class2":class_result[1],
+                            "class3":class_result[2],
+                            "prob1": prob_result[0],
+                            "prob2": prob_result[1],
+                            "prob3": prob_result[2],
+                    }
+                # return predictions
+                return results
+            else:
+                error = "Please upload images of jpg , jpeg and png extension only"
+            
+            
+        else:
+            return  {'error': 'Please add Files'}
+
+    else:
+        return {'error':'Requires post method'}
 
 
 
