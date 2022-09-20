@@ -14,7 +14,7 @@
         <row style = "width: 100% ; display: flex; justify-content: center;">
             <h3 class="header-text">Uploaded Image</h3>
         </row>
-        <row style = "width: 100% ; display: flex; justify-content: center;">
+        <row style = "width: 50% ; display: flex; justify-content: center;">
             <img class = "result-img" src={{image}}>
         </row>
     </div>
@@ -25,28 +25,7 @@
             <h3 class = "header-text">Model Prediction</h3>
         </row>
         <row style = "width: 100%; display: flex; justify-content: center;">
-            <table class="table-bordered text-light table-custom">
-                <tr>
-                    <th>Rank</th>
-                    <th>Class</th>
-                    <th>Probability</th>
-                </tr>
-                <tr>
-                    <td>1st</td>
-                    <td>{{ predictions.class1 }}</td>
-                    <td>{{ predictions.prob1 }} %</td>
-                  </tr>
-                  <tr>
-                    <td>2nd</td>
-                    <td>{{ predictions.class2 }}</td>                                                         
-                    <td>{{ predictions.prob2 }} %</td>                                                      
-                </tr>                                                                                                               
-                <tr>
-                    <td>3rd</td>
-                    <td>{{ predictions.class3 }}</td>
-                    <td>{{ predictions.prob3 }} %</td>
-                  </tr>
-            </table>
+            <p style="color: white;">{{predictions}}</p>
         </row>
     </div>
 </div>

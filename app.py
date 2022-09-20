@@ -1,13 +1,17 @@
 import os
-import uuid
 from flask import Flask, render_template, request, send_file,session
-import urllib
-from PIL import Image
 from keras.models import load_model
 from keras.utils import load_img, img_to_array
-from keras.metrics import mean_absolute_error
 from werkzeug.utils import secure_filename
 import secrets
+from keras.metrics import mean_absolute_error
+
+from keras_preprocessing.image import load_img,img_to_array
+from tensorflow.keras.models import model_from_json
+
+# from keras.preprocessing.image import load_img, img_to_array
+from keras.applications.xception import preprocess_input
+
 # from werkzeug.datastructures import  FileStorage
 
 app = Flask(__name__)
@@ -15,12 +19,41 @@ app = Flask(__name__)
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
 
+# Mean boneage
+mean_bone_age = 127.3207517246848
+
+# Standard deviation of boneage
+std_bone_age = 41.182021399396326
+
+# Image size
+IMG_SIZE = 256
+
+
+# Function to return mean absolute error in months
+def mae_in_months(x, y):
+    return mean_absolute_error((std_bone_age*x + mean_bone_age), 
+                               (std_bone_age*y + mean_bone_age))
+
+# load json and create model
+json_file = open(os.path.join(base_dir,'models/xception_weak_model.json'), 'r')
+loaded_model_json = json_file.read()
+json_file.close()
+loaded_model = model_from_json(loaded_model_json)
+
+# load weights into new model
+loaded_model.load_weights(os.path.join(base_dir,"models/xception_weak_model.h5"))
+#print("Loaded model from disk")
+
+#compile model
+loaded_model.compile(loss ='mse', optimizer= 'adam', metrics = [mae_in_months] )
+
+
 def mae_in_months(x, y):
     return mean_absolute_error((41.18*x + 127.320), 
                                (41.18*y +127.320))
 
 # model = load_model(os.path.join(base_dir,'models/model.hdf5'))
-model = load_model(os.path.join(base_dir,'models/xception_weak_model.hdf5'),compile=False,custom_objects={"mae_in_months": mae_in_months}); 
+# model = load_model(os.path.join(base_dir,'models/xception_weak_model.hdf5'),compile=False,custom_objects={"mae_in_months": mae_in_months}); 
 
 UPLOAD_FOLDER = os.path.join('static', 'uploads')
 
@@ -51,31 +84,20 @@ def allowed_file(filename):
 classes = ['male' ,'female']
 
 
-def runModel(filename , model):
-    img = load_img(filename , target_size = (256 , 256))
-    img = img_to_array(img)
-    img = img.reshape((256,256,3))
+def runModel(image):
+    # Load the image
+    image = load_img(image, target_size=(IMG_SIZE, IMG_SIZE))
 
-    img = img.astype('float32')
-    img = img/255.0
-    result = model.predict(img)
-
-    dict_result = {}
-    for i in range(10):
-        dict_result[result[0][i]] = classes[i]
-
-    res = result[0]
-    res.sort()
-    res = res[::-1]
-    prob = res[:3]
-    
-    prob_result = []
-    class_result = []
-    for i in range(3):
-        prob_result.append((prob[i]*100).round(2))
-        class_result.append(dict_result[prob[i]])
-
-    return class_result , prob_result
+    # Preprocess the image
+    image = img_to_array(image)
+    image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
+    image = preprocess_input(image)
+    # Make prediction using model
+    prediction = loaded_model.predict(image)
+   # Convert model prediction (which is normalized value) into bone age in months
+    predicted_age = (prediction * std_bone_age) + mean_bone_age
+    app.logger.info(predicted_age)
+    return predicted_age
 
 
 
@@ -94,28 +116,17 @@ def predict():
     if request.method == 'POST':
         if (request.files):
             file = request.files['file']
-            # file_name = secure_filename(file.filename)
-            # file.save(os.path.join(app.config['UPLOAD_FOLDER'], file_name))
-            # session['upload_image'] = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
-            # return render_template('image.html',image = os.path.join(app.config['UPLOAD_FOLDER'],file_name))
             
             if file and allowed_file(file.filename):
                 file_name = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], file_name))
                 img = file.filename
-                class_result , prob_result = runModel((os.path.join(app.config['UPLOAD_FOLDER'], img)) , model)
-                results = {
-                        "class1":class_result[0],
-                            "class2":class_result[1],
-                            "class3":class_result[2],
-                            "prob1": prob_result[0],
-                            "prob2": prob_result[1],
-                            "prob3": prob_result[2],
-                    }
-                # return predictions
-                return render_template('success.html',predictions=results,image= os.path.join(app.config['UPLOAD_FOLDER'],file_name))
+                result = runModel((os.path.join(app.config['UPLOAD_FOLDER'], img)))
+                # return {'result':float(result[0][0])}
+                return render_template('success.html',predictions=float(result[0][0]),image= os.path.join(app.config['UPLOAD_FOLDER'],file_name))
             else:
                 error = "Please upload images of jpg , jpeg and png extension only"
+                return  {'error':error}
             
             
         else:
