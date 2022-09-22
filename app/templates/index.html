@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+    
+{% block content %}
+
+<div class="d-flex flex-column align-items-center">
+   <!-- <div class="align-self-center"> -->
+      <p class="display-6 main body-text">
+         Welcome to Bone Age Prediction from Xray
+      </p>
+   <!-- </div> -->
+   <div class="flex-shrink-0">
+      <img src="../static/assets/bg.png" alt="" class="img-thumbnail thumb-img img-fluid">
+   </div>
+   <div class="upload-file">
+      <label class="custom-file-upload">
+         <form class = "file-form" action="/predict" method="post", enctype="multipart/form-data">
+            <input type="file"  name="file">
+            Upload
+            <button class="btn btn-success btn-lg">Proceed</button> 
+         </form>
+     </label>
+      </div>
+   <!-- <div class="m-5">
+      <button type="button" class="btn btn-warning">Upload Xray Image</button>
+   </div> -->
+</div>
+
+{% endblock content %}

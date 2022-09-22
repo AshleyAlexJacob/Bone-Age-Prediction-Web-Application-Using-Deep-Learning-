@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+    
+{% block content %}
+
+<div class="d-flex flex-column align-items-center">
+
+    <p class="display-6 main body-text">
+        Model Predictions
+     </p>
+     <img class = "result-img" src={{image}} style="max-height: 50vh; max-width: 100% ;object-fit: cover;">
+
+       <p class="m-5" style="color: white;">Bone Age: {{predictions}} Months</p>
+     
+</div>
+
+<!-- <div class = "second-main" style = "height: 100% ; width: 100%;">
+    <nav>
+        <ul style = "padding-right: 2%;" class = "main-nav">
+            <li><a href ="/">HomePage</a></li>                
+        </ul>
+       
+    </nav>
+    <div class = "header">
+        <row style = "width: 100% ; display: flex; justify-content: center;">
+            <h3 class="header-text">Uploaded Image</h3>
+        </row>
+        <!-- <row style = "width: 50% ; display: flex; justify-content: center; "> -->
+            <!-- <img class = "result-img" src={{image}} style="max-height: 50vh; max-width: 100% ;object-fit: cover;"> -->
+        <!-- </row> -->
+    <!-- </div> -->
+
+    <!-- <div class = "info">
+    
+        <row style = "width: 100% ; display: flex; justify-content: center;">
+            <h3 class = "header-text">Model Prediction</h3>
+        </row>
+        <row style = "width: 100%; display: flex; justify-content: center;">
+            <p style="color: white;">Bone Age: {{predictions}} Months</p>
+        </row>
+    </div> -->
+<!-- </div> -->
+
+{% endblock content %}
