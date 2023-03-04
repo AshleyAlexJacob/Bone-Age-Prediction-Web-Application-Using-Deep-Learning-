@@ -3,3 +3,4 @@ flask
 Werkzeug
 tensorflow-cpu
 Pillow
+keras_preprocessing
