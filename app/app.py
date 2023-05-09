@@ -122,7 +122,8 @@ def predict():
                 img = file.filename
                 result = runModel((os.path.join(app.config['UPLOAD_FOLDER'], img)))
                 # return {'result':float(result[0][0])}
-                return render_template('success.html',predictions=float(result[0][0]),image= f'static/uploads/{file_name}')
+                
+                return render_template('success.html',predictions=float("{:.4f}".format(float(result[0][0]))),image= f'static/uploads/{file_name}')
             else:
                 error = "Please upload images of jpg , jpeg and png extension only"
                 return  {'error':error}
@@ -161,3 +162,8 @@ def api():
 
     else:
         return {'error':'Requires post method'}
+
+
+if __name__ == '__main__':
+    # app.run(debug=True)
+    app.run(port=8080)
